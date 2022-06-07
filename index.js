@@ -1,14 +1,10 @@
 import readline from 'readline';
+import { getUsername } from './src/getUsername.js';
+import { list } from './src/file/ls.js';
 
 const runFileManager = async () => {
-  let username = process.argv[2];
-
-  if (username.includes('--username=')) {
-    username = username.split('=')[1];
-    console.log(`Welcome to the File Manager, ${username}!`);
-  } else {
-    console.log('Run the program as follows - "npm run start -- --username=your_user_name"')
-  }
+  const username = getUsername();
+  const currentDirectory = process.env.HOME || process.env.USERPROFILE;;
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -18,13 +14,18 @@ const runFileManager = async () => {
   rl.on('line', (input) => {
     switch (input) {
       case '.exit':
-        console.log(`Thank you for using File Manager, ${username}!`);
         rl.close();
+        break;
+      case 'ls':
+        list(currentDirectory);
+        break;
+      default:
+        process.stdout.write('Invalid input\n');
     }
   });
 
   process.on('exit', () => {
-    console.log(`Thank you for using File Manager, ${username}!`);
+    process.stdout.write(`Thank you for using File Manager, ${username}!\n`);
   });
 }
 
