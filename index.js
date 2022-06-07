@@ -1,7 +1,7 @@
 import readline from 'readline';
 import { getUsername } from './src/getUsername.js';
-import { navigation } from './src/file/navigation.js';
-import { list } from './src/file/list.js';
+import { navigation } from './src/nwd/navigation.js';
+import { list } from './src/nwd/list.js';
 
 const runFileManager = async () => {
   const username = getUsername();
