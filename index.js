@@ -1,10 +1,11 @@
 import readline from 'readline';
 import { getUsername } from './src/getUsername.js';
-import { list } from './src/file/ls.js';
+import { navigation } from './src/file/navigation.js';
+import { list } from './src/file/list.js';
 
 const runFileManager = async () => {
   const username = getUsername();
-  const currentDirectory = process.env.HOME || process.env.USERPROFILE;;
+  let currentDirectory = process.env.HOME || process.env.USERPROFILE;
 
   const rl = readline.createInterface({
     input: process.stdin,
@@ -12,20 +13,31 @@ const runFileManager = async () => {
   });
 
   rl.on('line', (input) => {
-    switch (input) {
-      case '.exit':
+    switch (true) {
+      case input === '.exit':
         rl.close();
         break;
-      case 'ls':
+      case input.startsWith('cd '):
+        currentDirectory = navigation(input.slice(3), currentDirectory);
+        // process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
+        break;
+      case input === 'up':
+        currentDirectory = navigation('..', currentDirectory);
+        // process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
+        break;
+      case input === 'ls':
         list(currentDirectory);
         break;
       default:
-        process.stdout.write('Invalid input\n');
+        process.stdout.write('\nInvalid input\n');
+        break;
     }
+
+    process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
   });
 
   process.on('exit', () => {
-    process.stdout.write(`Thank you for using File Manager, ${username}!\n`);
+    process.stdout.write(`\nThank you for using File Manager, ${username}!\n`);
   });
 }
 

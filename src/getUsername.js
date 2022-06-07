@@ -7,7 +7,7 @@ export const getUsername = () => {
     process.stdout.write(`Welcome to the File Manager, ${username}!\n`);
     process.stdout.write(`You are currently in ${homedir}\n`);
   } else {
-    process.stdout.write('Run the program as follows - "npm run start -- --username=your_user_name"\n')
+    process.stdout.write('\nRun the program as follows - "npm run start -- --username=your_user_name"\n')
   }
 
   return username;
