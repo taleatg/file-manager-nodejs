@@ -19,11 +19,9 @@ const runFileManager = async () => {
         break;
       case input.startsWith('cd '):
         currentDirectory = navigation(input.slice(3), currentDirectory);
-        // process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
         break;
       case input === 'up':
         currentDirectory = navigation('..', currentDirectory);
-        // process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
         break;
       case input === 'ls':
         list(currentDirectory);

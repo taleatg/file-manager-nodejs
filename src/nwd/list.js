@@ -1,9 +1,11 @@
 import fs from 'fs';
 import { readdir } from 'fs/promises';
+import path from 'path';
 
 export const list = async (currentDirectory) => {
   const pathFromFile = currentDirectory;
   const result = [];
+  const list = [];
 
   try {
     const files = await readdir(pathFromFile);
@@ -13,22 +15,21 @@ export const list = async (currentDirectory) => {
     }
 
     if (result.length) {
-      result.forEach(name => {
-        fs.stat(`${pathFromFile}/${name}`, (err, stats) => {
-          if (err) {
-            return process.stdout.write('Operation failed\n');
-          }
+      let type = '';
 
-          stats.isDirectory()
-            ? process.stdout.write(`folder: ${name}\n`)
-            : process.stdout.write(`file: ${name}\n`);
-        });
-      })
+      result.map(async (name, index) => {
+        list.push({
+          type: !!path.extname(`${pathFromFile}/${name}`) ? 'file' : 'directory',
+          name: name});
+      });
+
     } else {
       process.stdout.write('Nothing found');
     }
+
   } catch {
     process.stdout.write('Operation not permitted\n');
   }
 
+  console.table(list)
 }
