@@ -23,7 +23,7 @@ export const list = async (currentDirectory) => {
       });
 
     } else {
-      process.stdout.write('Nothing found');
+      process.stdout.write('Nothing found\n');
     }
 
   } catch {

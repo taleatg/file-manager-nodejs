@@ -1,7 +1,13 @@
 import readline from 'readline';
+import { join } from 'path';
 import { getUsername } from './src/getUsername.js';
 import { navigation } from './src/nwd/navigation.js';
 import { list } from './src/nwd/list.js';
+import { compress } from './src/zip/compress.js';
+import { decompress } from './src/zip/decompress.js';
+import {calculateHash} from './src/hash/calcHash.js';
+
+//TODO: add absolute path_to_directory
 
 const runFileManager = async () => {
   const username = getUsername();
@@ -26,12 +32,21 @@ const runFileManager = async () => {
       case input === 'ls':
         list(currentDirectory);
         break;
+      case input.startsWith('hash '):
+        await calculateHash(join(currentDirectory, input.split(' ')[1]));
+        break;
+      case input.startsWith('compress '):
+        await compress(join(currentDirectory, input.split(' ')[1]));
+        break;
+      case input.startsWith('decompress '):
+        await decompress(join(currentDirectory, input.split(' ')[1]));
+        break;
       default:
         process.stdout.write('\nInvalid input\n');
         break;
     }
 
-    process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
+    return process.stdout.write(`\nYou are currently in ${currentDirectory}\n`);
   });
 
   process.on('exit', () => {

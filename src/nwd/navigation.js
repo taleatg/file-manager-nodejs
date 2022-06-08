@@ -5,7 +5,7 @@ export const navigation = async (path, currentDirectory) => {
   let newPath = join(currentDirectory, path);
 
   if (!!extname(newPath)) {
-    process.stdout.write('\nInvalid input: you can only navigate to a directory\n');
+    process.stdout.write('\nOperation failed: you can only navigate to a directory\n');
     return currentDirectory;
   }
 
