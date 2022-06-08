@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { readdir } from 'fs/promises';
 import path from 'path';
 
@@ -17,7 +16,7 @@ export const list = async (currentDirectory) => {
     if (result.length) {
       let type = '';
 
-      result.map(async (name, index) => {
+      result.map(async (name) => {
         list.push({
           type: !!path.extname(`${pathFromFile}/${name}`) ? 'file' : 'directory',
           name: name});

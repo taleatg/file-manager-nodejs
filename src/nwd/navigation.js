@@ -1,15 +1,19 @@
-import { join } from 'path';
-import { access, constants } from 'fs';
+import { join, extname } from 'path';
+import fs from 'fs';
 
-export const navigation = (path, currentDirectory) => {
+export const navigation = async (path, currentDirectory) => {
   let newPath = join(currentDirectory, path);
 
-  access(newPath, constants.F_OK, async (err) => {
-    if (err) {
-      process.stdout.write('\nOperation failed\n');
-      newPath = currentDirectory;
-    }
-  });
+  if (!!extname(newPath)) {
+    process.stdout.write('\nInvalid input: you can only navigate to a directory\n');
+    return currentDirectory;
+  }
 
-  return newPath;
+  try {
+    await fs.promises.access(newPath);
+    return newPath;
+  } catch (error) {
+    process.stdout.write('\nOperation failed\n');
+    return currentDirectory;
+  }
 }

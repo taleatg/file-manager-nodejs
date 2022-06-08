@@ -12,16 +12,16 @@ const runFileManager = async () => {
     output: process.stdout
   });
 
-  rl.on('line', (input) => {
+  rl.on('line', async (input) => {
     switch (true) {
       case input === '.exit':
         rl.close();
         break;
       case input.startsWith('cd '):
-        currentDirectory = navigation(input.slice(3), currentDirectory);
+        currentDirectory = await navigation(input.slice(3), currentDirectory);
         break;
       case input === 'up':
-        currentDirectory = navigation('..', currentDirectory);
+        currentDirectory = await navigation('..', currentDirectory);
         break;
       case input === 'ls':
         list(currentDirectory);
