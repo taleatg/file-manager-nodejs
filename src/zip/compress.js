@@ -3,7 +3,7 @@ import zlib from 'zlib';
 
 export const compress = async (path) => {
   //TODO: add directory compression
-  console.log(path)
+  //TODO: fix compress path_to_file path_to_destination
 
   try {
     await fs.promises.access(path);

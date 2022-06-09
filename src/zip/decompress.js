@@ -3,6 +3,7 @@ import zlib from 'zlib';
 
 export const decompress = async (path) => {
   //TODO: add directory decompression
+  //TODO: fix decompress path_to_file path_to_destination
 
   try {
     await fs.promises.access(path);

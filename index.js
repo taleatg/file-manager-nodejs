@@ -9,6 +9,12 @@ import { decompress } from './src/zip/decompress.js';
 import { calculateHash } from './src/hash/calcHash.js';
 import { getInfoAboutCpus } from './src/os/cpus.js';
 import { getUserInfo } from './src/os/userInfo.js';
+import { read } from './src/file/read.js';
+import { add } from './src/file/add.js';
+import { rename } from './src/file/rename.js';
+import { copy } from './src/file/copy.js';
+import { move } from './src/file/move.js';
+import { remove } from './src/file/remove.js';
 
 const runFileManager = async () => {
   const username = getUsername();
@@ -16,8 +22,21 @@ const runFileManager = async () => {
 
   const checkPath = (path) => {
     const index = path.indexOf(' ');
-    const url = path.slice(index + 1);
+    const url = path.slice(index + 1).replace('_', ' ');
     return isAbsolute(url) ? url : join(currentDirectory, url);
+  }
+
+  const pathChekWithOtherParam = (inputs) => {
+    if (inputs.split(' ').length !== 3) {
+      return [];
+    }
+
+    const indexStart = inputs.indexOf(' ');
+    const indexFinish = inputs.lastIndexOf(' ');
+    const url = inputs.slice(indexStart + 1, indexFinish).replace('_', ' ');
+    const param = inputs.slice(indexFinish + 1).replace('_', ' ');
+
+    return isAbsolute(url) ? [url, param] : [join(currentDirectory, url), param];
   }
 
   const rl = readline.createInterface({
@@ -39,15 +58,26 @@ const runFileManager = async () => {
       case input === 'ls':
         list(currentDirectory);
         break;
-      case input.startsWith('hash '):
-        await calculateHash(checkPath(input));
+
+      case input.startsWith('cat '):
+        read(checkPath(input));
         break;
-      case input.startsWith('compress '):
-        await compress(checkPath(input));
+      case input.startsWith('add '):
+        add(checkPath(input));
         break;
-      case input.startsWith('decompress '):
-        await decompress(checkPath(input));
+      case input.startsWith('rn '):
+        await rename(pathChekWithOtherParam(input));
         break;
+      case input.startsWith('cp '):
+        copy(pathChekWithOtherParam(input));
+        break;
+      case input.startsWith('mv '):
+        move(pathChekWithOtherParam(input));
+        break;
+      case input.startsWith('rm '):
+        await remove(checkPath(input));
+        break;
+
       case input === 'os --EOL':
         process.stdout.write(os.EOL.replace('\n', '\\n'));
         process.stdout.write(' is default system End-Of-Line\n');
@@ -64,6 +94,18 @@ const runFileManager = async () => {
       case input === 'os --architecture':
         process.stdout.write(`\nCPU architecture for which Node.js binary has compiled is ${os.arch()}\n`);
         break;
+
+      case input.startsWith('hash '):
+        await calculateHash(checkPath(input));
+        break;
+
+      case input.startsWith('compress '):
+        await compress(checkPath(input));
+        break;
+      case input.startsWith('decompress '):
+        await decompress(checkPath(input));
+        break;
+
       default:
         process.stdout.write('\nInvalid input\n');
         break;
