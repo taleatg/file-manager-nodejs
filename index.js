@@ -15,7 +15,8 @@ const runFileManager = async () => {
   let currentDirectory = process.env.HOME || process.env.USERPROFILE;
 
   const checkPath = (path) => {
-    const url = path?.split(' ')[1] || path; //TODO: fix for folder with space
+    const index = path.indexOf(' ');
+    const url = path.slice(index + 1);
     return isAbsolute(url) ? url : join(currentDirectory, url);
   }
 
