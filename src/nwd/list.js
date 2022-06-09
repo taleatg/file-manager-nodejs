@@ -30,5 +30,5 @@ export const list = async (currentDirectory) => {
     process.stdout.write('Operation not permitted\n');
   }
 
-  console.table(list)
+  console.table(list);
 }

@@ -1,4 +1,4 @@
-import { join, extname } from 'path';
+import { extname } from 'path';
 import fs from 'fs';
 
 export const navigation = async (path, currentDirectory) => {
