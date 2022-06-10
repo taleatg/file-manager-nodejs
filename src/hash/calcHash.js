@@ -1,20 +1,26 @@
+import fs from 'fs';
 import crypto from 'crypto';
-import { readFile } from 'fs/promises';
 import { extname } from 'path';
 
 export const calculateHash = async (path) => {
-  if (extname(path).length === 0) {
+  if (!extname(path)) {
     process.stdout.write('\nOperation failed: you need to enter path to file\n');
     return;
   }
 
-  await readFile(path, 'utf8')
-    .then((data) => {
-      const hash = crypto.createHash('sha256');
-      const hex = hash.update(data).digest('hex');
+  try {
+    const hash = crypto.createHash('sha256');
+    const stream = fs.createReadStream(path);
+
+    stream.on('data', (data) => {
+      hash.update(data);
+    });
+
+    stream.on('end', () => {
+      const hex = hash.digest('hex');
       process.stdout.write(`\nHash: ${hex}\n`);
-  })
-    .catch((err) => {
-      process.stdout.write('\nOperation failed\n');
-  });
+    });
+  } catch {
+    process.stdout.write('\nOperation failed\n');
+  }
 };
