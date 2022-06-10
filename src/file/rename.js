@@ -25,13 +25,13 @@ export const rename = async (args) => {
     err
       ? process.stdout.write('\nOperation failed\n')
       : access(fileRename, constants.F_OK, (err) => {
-        if (err) {
-          fs.rename(path, fileRename, (err) => {
+        err
+          ? fs.rename(path, fileRename, (err) => {
             if (err) {
               process.stdout.write('\nOperation failed\n');
             }
-          });
-        }
+          })
+          : process.stdout.write('\nOperation failed: file already exists\n');
       });
   });
 }

@@ -1,6 +1,6 @@
 import readline from 'readline';
 import os from 'os';
-import { join, isAbsolute } from 'path';
+import { pathCheck, pathChekWithOtherParam } from './src/pathCheck.js';
 import { getUsername } from './src/getUsername.js';
 import { navigation } from './src/nwd/navigation.js';
 import { list } from './src/nwd/list.js';
@@ -20,25 +20,6 @@ const runFileManager = async () => {
   const username = getUsername();
   let currentDirectory = process.env.HOME || process.env.USERPROFILE;
 
-  const checkPath = (path) => {
-    const index = path.indexOf(' ');
-    const url = path.slice(index + 1).replace('_', ' ');
-    return isAbsolute(url) ? url : join(currentDirectory, url);
-  }
-
-  const pathChekWithOtherParam = (inputs) => {
-    if (inputs.split(' ').length !== 3) {
-      return [];
-    }
-
-    const indexStart = inputs.indexOf(' ');
-    const indexFinish = inputs.lastIndexOf(' ');
-    const url = inputs.slice(indexStart + 1, indexFinish).replace('_', ' ');
-    const param = inputs.slice(indexFinish + 1).replace('_', ' ');
-
-    return isAbsolute(url) ? [url, param] : [join(currentDirectory, url), param];
-  }
-
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
@@ -50,36 +31,36 @@ const runFileManager = async () => {
         rl.close();
         break;
       case input.startsWith('cd '):
-        currentDirectory = await navigation(checkPath(input), currentDirectory);
+        currentDirectory = await navigation(pathCheck(input, currentDirectory), currentDirectory);
         break;
       case input === 'up':
-        currentDirectory = await navigation(checkPath('..'));
+        currentDirectory = await navigation(pathCheck('..', currentDirectory));
         break;
       case input === 'ls':
         list(currentDirectory);
         break;
 
       case input.startsWith('cat '):
-        read(checkPath(input));
+        await read(pathCheck(input, currentDirectory));
         break;
       case input.startsWith('add '):
-        add(checkPath(input));
+        add(pathCheck(input, currentDirectory));
         break;
       case input.startsWith('rn '):
-        await rename(pathChekWithOtherParam(input));
+        await rename(pathChekWithOtherParam(input, currentDirectory));
         break;
       case input.startsWith('cp '):
-        copy(pathChekWithOtherParam(input));
+        await copy(pathChekWithOtherParam(input, currentDirectory));
         break;
       case input.startsWith('mv '):
-        move(pathChekWithOtherParam(input));
+        move(pathChekWithOtherParam(input, currentDirectory));
         break;
       case input.startsWith('rm '):
-        await remove(checkPath(input));
+        await remove(pathCheck(input, currentDirectory));
         break;
 
       case input === 'os --EOL':
-        process.stdout.write(os.EOL.replace('\n', '\\n'));
+        process.stdout.write('\n' + JSON.stringify(os.EOL));
         process.stdout.write(' is default system End-Of-Line\n');
         break;
       case input === 'os --cpus':
@@ -96,14 +77,14 @@ const runFileManager = async () => {
         break;
 
       case input.startsWith('hash '):
-        await calculateHash(checkPath(input));
+        await calculateHash(pathCheck(input, currentDirectory));
         break;
 
       case input.startsWith('compress '):
-        await compress(checkPath(input));
+        await compress(pathCheck(input, currentDirectory));
         break;
       case input.startsWith('decompress '):
-        await decompress(checkPath(input));
+        await decompress(pathCheck(input, currentDirectory));
         break;
 
       default:
