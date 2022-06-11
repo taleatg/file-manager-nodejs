@@ -10,6 +10,7 @@ export const navigation = async (path, currentDirectory) => {
 
   try {
     await fs.promises.access(path);
+    process.chdir(path);
     return path;
   } catch (error) {
     process.stdout.write('\nOperation failed\n');

@@ -37,7 +37,7 @@ const runFileManager = async () => {
         currentDirectory = await navigation(pathCheck('..', currentDirectory));
         break;
       case input === 'ls':
-        list(currentDirectory);
+        await list(currentDirectory);
         break;
 
       case input.startsWith('cat '):
@@ -73,7 +73,7 @@ const runFileManager = async () => {
         getUserInfo('username');
         break;
       case input === 'os --architecture':
-        process.stdout.write(`\nCPU architecture for which Node.js binary has compiled is ${os.arch()}\n`);
+        process.stdout.write(`\nCPU architecture for which Node.js binary has compiled is "${os.arch()}"\n`);
         break;
 
       case input.startsWith('hash '):

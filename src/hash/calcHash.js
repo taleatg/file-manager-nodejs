@@ -9,18 +9,19 @@ export const calculateHash = async (path) => {
   }
 
   try {
+    await fs.promises.access(path);
     const hash = crypto.createHash('sha256');
     const stream = fs.createReadStream(path);
+    hash.setEncoding('hex');
 
-    stream.on('data', (data) => {
-      hash.update(data);
+    stream.on('end', async () => {
+      hash.end();
+      process.stdout.write(`\nHash: ${hash.read()}\n`);
     });
 
-    stream.on('end', () => {
-      const hex = hash.digest('hex');
-      process.stdout.write(`\nHash: ${hex}\n`);
-    });
-  } catch {
-    process.stdout.write('\nOperation failed\n');
+    await stream.pipe(hash);
+
+  } catch (err) {
+    process.stdout.write(`\nOperation failed: "${err}"\n`);
   }
 };
