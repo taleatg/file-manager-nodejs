@@ -14,14 +14,14 @@ export const calculateHash = async (path) => {
     const stream = fs.createReadStream(path);
     hash.setEncoding('hex');
 
-    stream.on('end', async () => {
-      hash.end();
-      process.stdout.write(`\nHash: ${hash.read()}\n`);
+    return new Promise((resolve) => {
+      stream.on('end', () => {
+        hash.end();
+        resolve(process.stdout.write(`\nHash: ${hash.read()}\n`));
+      });
+      stream.pipe(hash)
     });
-
-    await stream.pipe(hash);
-
   } catch (err) {
     process.stdout.write(`\nOperation failed: "${err}"\n`);
-  }
+  };
 };

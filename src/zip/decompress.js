@@ -10,6 +10,11 @@ export const decompress = async (args) => {
     return;
   }
 
+  if (extname(pathToFile) !== '.br') {
+    process.stdout.write('\nOperation failed: you didn\'t choose the archive\n');
+    return;
+  }
+
   try {
     await fs.promises.access(pathToFile);
 
