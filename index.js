@@ -1,6 +1,6 @@
 import readline from 'readline';
 import os from 'os';
-import { pathCheck, pathChekWithOtherParam } from './src/pathCheck.js';
+import { pathCheck, pathChekWithOtherParam, pathChekWithFileName } from './src/pathCheck.js';
 import { getUsername } from './src/getUsername.js';
 import { navigation } from './src/nwd/navigation.js';
 import { list } from './src/nwd/list.js';
@@ -50,10 +50,10 @@ const runFileManager = async () => {
         await rename(pathChekWithOtherParam(input, currentDirectory));
         break;
       case input.startsWith('cp '):
-        await copy(pathChekWithOtherParam(input, currentDirectory));
+        await copy(pathChekWithFileName(input, currentDirectory));
         break;
       case input.startsWith('mv '):
-        move(pathChekWithOtherParam(input, currentDirectory));
+        await move(pathChekWithFileName(input, currentDirectory));
         break;
       case input.startsWith('rm '):
         await remove(pathCheck(input, currentDirectory));
@@ -81,10 +81,10 @@ const runFileManager = async () => {
         break;
 
       case input.startsWith('compress '):
-        await compress(pathCheck(input, currentDirectory));
+        await compress(pathChekWithFileName(input, currentDirectory));
         break;
       case input.startsWith('decompress '):
-        await decompress(pathCheck(input, currentDirectory));
+        await decompress(pathChekWithFileName(input, currentDirectory));
         break;
 
       default:

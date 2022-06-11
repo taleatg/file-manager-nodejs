@@ -18,3 +18,20 @@ export const pathChekWithOtherParam = (inputs, currentDirectory) => {
 
   return isAbsolute(url) ? [url, param] : [join(currentDirectory, url), param];
 }
+
+export const pathChekWithFileName = (inputs, currentDirectory) => {
+  if (inputs.split(' ').length !== 3) {
+    return [];
+  }
+
+  const indexStartName = inputs.indexOf(' ');
+  const indexFinishName = inputs.lastIndexOf(' ');
+
+  let pathToFile = inputs.slice(indexStartName + 1, indexFinishName).replace('_', ' ');
+  let pathToDestination = inputs.slice(indexFinishName + 1).replace('_', ' ');
+
+  pathToFile = isAbsolute(pathToFile) ? pathToFile : join(currentDirectory, pathToFile);
+  pathToDestination = isAbsolute(pathToDestination) ? pathToDestination : join(currentDirectory, pathToDestination);
+
+  return [pathToFile, pathToDestination];
+}
